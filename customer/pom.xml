@@ -8,9 +8,18 @@
 		<version>3.4.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.jgonzal.retail</groupId>
 	<artifactId>customer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	
+	<modules>
+		<module>boot</module>
+		<module>infrastructure</module>
+		<module>application</module>
+		<module>domain</module>
+	</modules>
 	<name>customer</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
