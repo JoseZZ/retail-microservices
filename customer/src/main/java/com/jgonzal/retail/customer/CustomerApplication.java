@@ -1,4 +1,4 @@
-package com.retail.customer;
+package com.jgonzal.retail.customer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

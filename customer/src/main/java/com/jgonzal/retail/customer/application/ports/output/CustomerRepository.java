@@ -1,7 +1,8 @@
-package com.retail.customer.domain.repository;
+package com.jgonzal.retail.customer.application.ports.output;
 
-import com.retail.customer.domain.model.Customer;
 import java.util.List;
+
+import com.jgonzal.retail.customer.domain.entities.Customer;
 
 public interface CustomerRepository {
     Customer save(Customer customer);

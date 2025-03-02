@@ -1,17 +1,19 @@
-package com.retail.customer.infrastructure.adapters.out.persistence;
+package com.jgonzal.retail.customer.infrastructure.adapters.out.persistence;
 
-import com.retail.customer.domain.model.Customer;
-import com.retail.customer.domain.repository.CustomerRepository;
-import com.retail.customer.infrastructure.repository.JpaCustomerRepository;
 import org.springframework.stereotype.Component;
+
+import com.jgonzal.retail.customer.application.ports.output.CustomerRepository;
+import com.jgonzal.retail.customer.domain.entities.Customer;
+import com.jgonzal.retail.customer.infrastructure.repository.JpaCustomerRepository;
 
 import java.util.List;
 
 @Component
-public class CustomerPersistenceAdapter implements CustomerRepository {
+public class SqlCustomerRepository implements CustomerRepository {
+
     private final JpaCustomerRepository jpaCustomerRepository;
 
-    public CustomerPersistenceAdapter(JpaCustomerRepository jpaCustomerRepository) {
+    public SqlCustomerRepository(JpaCustomerRepository jpaCustomerRepository) {
         this.jpaCustomerRepository = jpaCustomerRepository;
     }
 

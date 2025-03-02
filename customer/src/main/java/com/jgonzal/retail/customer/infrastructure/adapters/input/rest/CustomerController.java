@@ -1,16 +1,17 @@
-package com.retail.customer.infrastructure.adapters.in.rest;
+package com.jgonzal.retail.customer.infrastructure.adapters.input.rest;
 
-import com.retail.customer.application.services.CustomerService;
-import com.retail.customer.domain.model.Customer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.jgonzal.retail.customer.application.ports.input.CustomerService;
+import com.jgonzal.retail.customer.domain.entities.Customer;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
-    
+
     private final CustomerService customerService;
 
     public CustomerController(CustomerService customerService) {
