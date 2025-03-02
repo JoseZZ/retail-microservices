@@ -2,7 +2,7 @@ package com.jgonzal.retail.customer.application.ports.input;
 
 import java.util.List;
 
-import com.jgonzal.retail.customer.domain.entities.Customer;
+import com.jgonzal.retail.customer.domain.model.Customer;
 
 public interface CustomerService {
     Customer createCustomer(Customer customer);

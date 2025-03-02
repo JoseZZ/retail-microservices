@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.jgonzal.retail.customer.application.ports.input.CustomerService;
-import com.jgonzal.retail.customer.domain.entities.Customer;
+import com.jgonzal.retail.customer.domain.model.Customer;
 
 import java.util.List;
 

@@ -3,7 +3,7 @@ package com.jgonzal.retail.customer.infrastructure.adapters.out.persistence;
 import org.springframework.stereotype.Component;
 
 import com.jgonzal.retail.customer.application.ports.output.CustomerRepository;
-import com.jgonzal.retail.customer.domain.entities.Customer;
+import com.jgonzal.retail.customer.infrastructure.adapters.out.persistence.entity.CustomerEntity;
 import com.jgonzal.retail.customer.infrastructure.repository.JpaCustomerRepository;
 
 import java.util.List;
@@ -18,17 +18,17 @@ public class SqlCustomerRepository implements CustomerRepository {
     }
 
     @Override
-    public Customer save(Customer customer) {
+    public CustomerEntity save(CustomerEntity customer) {
         return jpaCustomerRepository.save(customer);
     }
 
     @Override
-    public Customer findById(Long id) {
+    public CustomerEntity findById(Long id) {
         return jpaCustomerRepository.findById(id).orElse(null);
     }
 
     @Override
-    public List<Customer> findAll() {
+    public List<CustomerEntity> findAll() {
         return jpaCustomerRepository.findAll();
     }
 
