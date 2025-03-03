@@ -13,6 +13,12 @@
     <packaging>jar</packaging>
     
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <!-- The "application" and "domain" modules are transitively included already;
         but we need to include them *explicitly* so that the aggregated JaCoCo report will cover them. -->
 
