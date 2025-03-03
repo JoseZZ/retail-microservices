@@ -8,33 +8,24 @@ FROM maven:3.9-eclipse-temurin-17 AS build
 # /app es una convención común para aplicaciones en contenedores
 WORKDIR /app
 
-# Copiamos primero todos los archivos pom.xml para aprovechar el caché de Docker
-# Esta es una optimización importante: Docker cachea las capas y solo las reconstruye
-# cuando hay cambios. Al copiar primero los pom.xml, las dependencias se cachean
-# y no se descargan de nuevo a menos que los pom.xml cambien
+# Copiamos los archivos pom.xml de todos los módulos
 COPY customer/pom.xml customer/
 COPY customer/boot/pom.xml customer/boot/
-COPY customer/infrastructure/pom.xml customer/infrastructure/
-COPY customer/application/pom.xml customer/application/
 COPY customer/domain/pom.xml customer/domain/
-COPY pom.xml .
+COPY customer/application/pom.xml customer/application/
+COPY customer/infrastructure/pom.xml customer/infrastructure/
 
-# Descargamos todas las dependencias del proyecto
-# dependency:go-offline descarga todas las dependencias sin compilar el código
-# Esto se hace antes de copiar el código fuente para aprovechar el caché de Docker
-# Si el código cambia pero las dependencias no, no se ejecutará este paso
-RUN mvn dependency:go-offline
+# Descargamos las dependencias
+RUN mvn -f customer/pom.xml dependency:go-offline -B
 
-# Copiamos el código fuente completo del módulo customer
-# Esto se hace después de descargar las dependencias para aprovechar el caché
-# Si solo cambia el código fuente, no se volverán a descargar las dependencias
-COPY customer customer/
+# Copiamos el código fuente
+COPY customer/boot/src customer/boot/src
+COPY customer/domain/src customer/domain/src
+COPY customer/application/src customer/application/src
+COPY customer/infrastructure/src customer/infrastructure/src
 
-# Compilamos el proyecto y generamos el JAR ejecutable
-# clean: Limpia los archivos compilados anteriores
-# package: Compila el código y crea el JAR
-# -DskipTests: Omite la ejecución de pruebas para agilizar la construcción
-RUN mvn clean package -DskipTests
+# Compilamos la aplicación
+RUN mvn -f customer/pom.xml clean package -DskipTests
 
 # Etapa de ejecución: Esta etapa contiene solo lo necesario para ejecutar la aplicación
 # Usamos una imagen más ligera que solo incluye el JRE de Java 17
