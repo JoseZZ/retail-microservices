@@ -29,8 +29,7 @@ public class SqlCustomerRepository implements CustomerRepository {
 
     @Override
     public Customer findById(Long id) {
-        var customerEntity = jpaCustomerRepository.findById(id).orElse(null);
-        return customerMapper.toDomain(customerEntity);
+        return jpaCustomerRepository.findById(id).map(customerMapper::toDomain).orElse(null);
     }
 
     @Override
