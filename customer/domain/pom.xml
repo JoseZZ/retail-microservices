@@ -9,9 +9,9 @@
           <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.jgonzal.retail</groupId>
     <artifactId>domain</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
     
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

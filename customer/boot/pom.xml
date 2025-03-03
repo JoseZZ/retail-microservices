@@ -9,9 +9,7 @@
           <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.jgonzal.retail</groupId>
     <artifactId>boot</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <dependencies>
@@ -46,6 +44,13 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>             
+                        <configuration>    
+                            <mainClass>com.jgonzal.retail.CustomerApplication</mainClass>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <executions>
@@ -67,6 +72,7 @@
                     </plugin>
                 </plugins>
             </build>
+            
         </profile>
     </profiles>
 
