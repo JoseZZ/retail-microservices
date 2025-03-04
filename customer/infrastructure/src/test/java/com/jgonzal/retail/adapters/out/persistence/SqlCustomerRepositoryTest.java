@@ -3,7 +3,7 @@ package com.jgonzal.retail.adapters.out.persistence;
 import com.jgonzal.retail.adapters.out.persistence.entity.CustomerEntity;
 import com.jgonzal.retail.adapters.out.persistence.mapper.CustomerMapper;
 import com.jgonzal.retail.adapters.out.persistence.repository.JpaCustomerRepository;
-
+import com.jgonzal.retail.exception.CustomerNotFoundException;
 import com.jgonzal.retail.model.Customer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import org.mockito.InjectMocks;
@@ -85,16 +86,16 @@ class SqlCustomerRepositoryTest {
     }
 
     @Test
-    void findById_ShouldReturnNull_WhenNotExists() {
+    void findById_ShouldThrowCustomerNotFoundException_WhenNotExists() {
         // Given
         Long id = 1L;
         when(repository.findById(id)).thenReturn(Optional.empty());
 
-        // When
-        Customer result = sqlCustomerRepository.findById(id);
+        // When/Then
+        assertThatThrownBy(() -> sqlCustomerRepository.findById(id))
+            .isInstanceOf(CustomerNotFoundException.class)
+            .hasMessage("Cliente no encontrado con id: " + id);
 
-        // Then
-        assertThat(result).isNull();
         verify(repository).findById(id);
         verify(mapper, never()).toDomain(any());
     }
@@ -124,14 +125,33 @@ class SqlCustomerRepositoryTest {
     }
 
     @Test
-    void deleteById_ShouldDeleteCustomer() {
+    void deleteById_ShouldDeleteCustomer_WhenExists() {
         // Given
         Long id = 1L;
+        CustomerEntity entity = new CustomerEntity();
+        entity.setId(id);
+        when(repository.findById(id)).thenReturn(Optional.of(entity));
 
         // When
         sqlCustomerRepository.deleteById(id);
 
         // Then
         verify(repository).deleteById(id);
+        verify(repository).findById(id);
+    }
+
+    @Test
+    void deleteById_ShouldThrowCustomerNotFoundException_WhenNotExists() {
+        // Given
+        Long id = 1L;
+        when(repository.findById(id)).thenReturn(Optional.empty());
+
+        // When/Then
+        assertThatThrownBy(() -> sqlCustomerRepository.deleteById(id))
+            .isInstanceOf(CustomerNotFoundException.class)
+            .hasMessage("Cliente no encontrado con id: " + id);
+
+        verify(repository).findById(id);
+        verify(repository, never()).deleteById(any());
     }
 } 

@@ -6,6 +6,7 @@ import com.jgonzal.retail.model.Customer;
 import com.jgonzal.retail.ports.output.CustomerRepository;
 import com.jgonzal.retail.adapters.out.persistence.mapper.CustomerMapper;
 import com.jgonzal.retail.adapters.out.persistence.repository.JpaCustomerRepository;
+import com.jgonzal.retail.exception.CustomerNotFoundException;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class SqlCustomerRepository implements CustomerRepository {
 
     @Override
     public Customer findById(Long id) {
-        return jpaCustomerRepository.findById(id).map(customerMapper::toDomain).orElse(null);
+        return jpaCustomerRepository.findById(id).map(customerMapper::toDomain).orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     @Override
@@ -40,6 +41,9 @@ public class SqlCustomerRepository implements CustomerRepository {
 
     @Override
     public void deleteById(Long id) {
-        jpaCustomerRepository.deleteById(id);
+        jpaCustomerRepository.findById(id).ifPresentOrElse(customer -> jpaCustomerRepository.deleteById(customer.getId()), () -> {
+            throw new CustomerNotFoundException(id);
+        }); 
+    
     }
 }
