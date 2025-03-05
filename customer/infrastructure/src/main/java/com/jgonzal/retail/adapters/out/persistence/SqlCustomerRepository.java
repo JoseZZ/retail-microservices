@@ -9,6 +9,7 @@ import com.jgonzal.retail.adapters.out.persistence.repository.JpaCustomerReposit
 import com.jgonzal.retail.exception.CustomerNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class SqlCustomerRepository implements CustomerRepository {
@@ -29,8 +30,8 @@ public class SqlCustomerRepository implements CustomerRepository {
     }
 
     @Override
-    public Customer findById(Long id) {
-        return jpaCustomerRepository.findById(id).map(customerMapper::toDomain).orElseThrow(() -> new CustomerNotFoundException(id));
+    public Optional<Customer> findById(Long id) {
+        return jpaCustomerRepository.findById(id).map(customerMapper::toDomain);
     }
 
     @Override
@@ -40,10 +41,21 @@ public class SqlCustomerRepository implements CustomerRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
-        jpaCustomerRepository.findById(id).ifPresentOrElse(customer -> jpaCustomerRepository.deleteById(customer.getId()), () -> {
-            throw new CustomerNotFoundException(id);
-        }); 
-    
+    public boolean deleteById(Long id) {
+        if (jpaCustomerRepository.existsById(id)) {
+            jpaCustomerRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override   
+    public Optional<Customer> update(Customer customer) {
+        if (jpaCustomerRepository.existsById(customer.getId())) {
+            var customerEntity = customerMapper.toEntity(customer);
+            var updatedCustomer = jpaCustomerRepository.save(customerEntity);
+            return Optional.of(customerMapper.toDomain(updatedCustomer));
+        }
+        return Optional.empty();
     }
 }

@@ -1,15 +1,20 @@
 package com.jgonzal.retail.adapters.input.rest.data.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
-@Getter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ErrorResponse {
-    private final LocalDateTime timestamp;
-    private final int status;
-    private final String error;
-    private final String message;
-    private final String path;
+    private LocalDateTime timestamp;
+    private int status;
+    private String error;
+    private String message;
+    private String path;
 } 

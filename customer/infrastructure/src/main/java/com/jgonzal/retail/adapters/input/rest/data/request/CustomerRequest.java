@@ -1,14 +1,14 @@
 package com.jgonzal.retail.adapters.input.rest.data.request;
 
-import lombok.Builder;
-import lombok.Getter;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class CustomerRequest {
     private String name;
     private String email;

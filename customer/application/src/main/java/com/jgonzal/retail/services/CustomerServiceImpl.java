@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.jgonzal.retail.model.Customer;
 import com.jgonzal.retail.ports.input.CustomerService;
 import com.jgonzal.retail.ports.output.CustomerRepository;
+import com.jgonzal.retail.exception.CustomerNotFoundException;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public Customer getCustomerById(Long id) {
-        return customerRepository.findById(id);
+        return customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     public List<Customer> getAllCustomers() {
@@ -31,6 +32,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public void deleteCustomer(Long id) {
-        customerRepository.deleteById(id);
+        if(!customerRepository.deleteById(id)){
+            throw new CustomerNotFoundException(id);
+        }
+    }
+
+    public Customer updateCustomer(Long id, Customer customer) {
+        return customerRepository.update(customer).orElseThrow(() -> new CustomerNotFoundException(id));
+
     }
 }

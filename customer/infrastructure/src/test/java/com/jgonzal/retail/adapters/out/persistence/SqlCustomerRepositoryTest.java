@@ -1,23 +1,27 @@
 package com.jgonzal.retail.adapters.out.persistence;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import com.jgonzal.retail.adapters.out.persistence.entity.CustomerEntity;
 import com.jgonzal.retail.adapters.out.persistence.mapper.CustomerMapper;
 import com.jgonzal.retail.adapters.out.persistence.repository.JpaCustomerRepository;
 import com.jgonzal.retail.exception.CustomerNotFoundException;
 import com.jgonzal.retail.model.Customer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import org.mockito.InjectMocks;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -76,7 +80,7 @@ class SqlCustomerRepositoryTest {
         when(mapper.toDomain(entity)).thenReturn(customer);
 
         // When
-        Customer result = sqlCustomerRepository.findById(id);
+        Customer result = sqlCustomerRepository.findById(id).get();
 
         // Then
         assertThat(result).isNotNull();
