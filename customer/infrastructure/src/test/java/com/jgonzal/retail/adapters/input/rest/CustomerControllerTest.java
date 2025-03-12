@@ -28,6 +28,7 @@ import com.jgonzal.retail.adapters.input.rest.mapper.CustomerRestMapper;
 import com.jgonzal.retail.exception.CustomerNotFoundException;
 import com.jgonzal.retail.model.Customer;
 import com.jgonzal.retail.ports.input.CustomerService;
+import com.jgonzal.retail.adapters.input.rest.exception.GlobalExceptionHandler;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerControllerTest {
