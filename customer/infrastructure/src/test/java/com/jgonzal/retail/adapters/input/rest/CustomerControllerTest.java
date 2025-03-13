@@ -57,17 +57,23 @@ class CustomerControllerTest {
         CustomerRequest request = new CustomerRequest();
         request.setName("John Doe");
         request.setEmail("john.doe@example.com");
+        request.setDni("12345678A");
+        request.setAge(30);
 
         Customer customer = Customer.builder().build();
         Customer createdCustomer = Customer.builder()
                 .id(1L)
                 .name("John Doe")
                 .email("john.doe@example.com")
+                .dni("12345678A")
+                .age(30)
                 .build();
         CustomerResponse expectedResponse = new CustomerResponse();
         expectedResponse.setId(1L);
         expectedResponse.setName("John Doe");
         expectedResponse.setEmail("john.doe@example.com");
+        expectedResponse.setDni("12345678A");
+        expectedResponse.setAge(30);
 
         when(customerMapper.toDomain(request)).thenReturn(customer);
         when(customerService.createCustomer(customer)).thenReturn(createdCustomer);
@@ -80,7 +86,9 @@ class CustomerControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("John Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
+                .andExpect(jsonPath("$.dni").value("12345678A"))
+                .andExpect(jsonPath("$.age").value(30));
 
         verify(customerMapper).toDomain(request);
         verify(customerService).createCustomer(customer);
@@ -95,11 +103,15 @@ class CustomerControllerTest {
                 .id(customerId)
                 .name("John Doe")
                 .email("john.doe@example.com")
+                .dni("12345678A")
+                .age(30)
                 .build();
         CustomerResponse expectedResponse = new CustomerResponse();
         expectedResponse.setId(customerId);
         expectedResponse.setName("John Doe");
         expectedResponse.setEmail("john.doe@example.com");
+        expectedResponse.setDni("12345678A");
+        expectedResponse.setAge(30);
 
         when(customerService.getCustomerById(customerId)).thenReturn(customer);
         when(customerMapper.toResponse(customer)).thenReturn(expectedResponse);
@@ -109,7 +121,9 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(customerId))
                 .andExpect(jsonPath("$.name").value("John Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
+                .andExpect(jsonPath("$.dni").value("12345678A"))
+                .andExpect(jsonPath("$.age").value(30));
 
         verify(customerService).getCustomerById(customerId);
         verify(customerMapper).toResponse(customer);
@@ -133,11 +147,11 @@ class CustomerControllerTest {
     void getAllCustomers_ShouldReturnListOfCustomers() throws Exception {
         // Given
         List<Customer> customers = List.of(
-                Customer.builder().id(1L).name("John Doe").email("john@example.com").build(),
-                Customer.builder().id(2L).name("Jane Doe").email("jane@example.com").build());
+                Customer.builder().id(1L).name("John Doe").email("john@example.com").dni("12345678A").age(30).build(),
+                Customer.builder().id(2L).name("Jane Doe").email("jane@example.com").dni("87654321B").age(25).build());
         List<CustomerResponse> expectedResponses = List.of(
-                new CustomerResponse(1L, "John Doe", "john@example.com"),
-                new CustomerResponse(2L, "Jane Doe", "jane@example.com"));
+                new CustomerResponse(1L, "John Doe", "john@example.com", "12345678A", 30),
+                new CustomerResponse(2L, "Jane Doe", "jane@example.com", "87654321B", 25));
 
         when(customerService.getAllCustomers()).thenReturn(customers);
         when(customerMapper.toResponseList(customers)).thenReturn(expectedResponses);
@@ -148,9 +162,13 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("John Doe"))
                 .andExpect(jsonPath("$[0].email").value("john@example.com"))
+                .andExpect(jsonPath("$[0].dni").value("12345678A"))
+                .andExpect(jsonPath("$[0].age").value(30))
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("Jane Doe"))
-                .andExpect(jsonPath("$[1].email").value("jane@example.com"));
+                .andExpect(jsonPath("$[1].email").value("jane@example.com"))
+                .andExpect(jsonPath("$[1].dni").value("87654321B"))
+                .andExpect(jsonPath("$[1].age").value(25));
 
         verify(customerService).getAllCustomers();
         verify(customerMapper).toResponseList(customers);
@@ -189,22 +207,30 @@ class CustomerControllerTest {
         CustomerRequest request = new CustomerRequest();
         request.setName("John Updated");
         request.setEmail("john.updated@example.com");
+        request.setDni("12345678A");
+        request.setAge(35);
 
         Customer customerToUpdate = Customer.builder()
                 .name("John Updated")
                 .email("john.updated@example.com")
+                .dni("12345678A")
+                .age(35)
                 .build();
 
         Customer updatedCustomer = Customer.builder()
                 .id(customerId)
                 .name("John Updated")
                 .email("john.updated@example.com")
+                .dni("12345678A")
+                .age(35)
                 .build();
 
         CustomerResponse expectedResponse = new CustomerResponse();
         expectedResponse.setId(customerId);
         expectedResponse.setName("John Updated");
         expectedResponse.setEmail("john.updated@example.com");
+        expectedResponse.setDni("12345678A");
+        expectedResponse.setAge(35);
 
         when(customerMapper.toDomain(request)).thenReturn(customerToUpdate);
         when(customerService.updateCustomer(customerId, customerToUpdate)).thenReturn(updatedCustomer);
@@ -217,7 +243,9 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(customerId))
                 .andExpect(jsonPath("$.name").value("John Updated"))
-                .andExpect(jsonPath("$.email").value("john.updated@example.com"));
+                .andExpect(jsonPath("$.email").value("john.updated@example.com"))
+                .andExpect(jsonPath("$.dni").value("12345678A"))
+                .andExpect(jsonPath("$.age").value(35));
 
         verify(customerMapper).toDomain(request);
         verify(customerService).updateCustomer(customerId, customerToUpdate);
@@ -231,10 +259,14 @@ class CustomerControllerTest {
         CustomerRequest request = new CustomerRequest();
         request.setName("John Updated");
         request.setEmail("john.updated@example.com");
+        request.setDni("12345678A");
+        request.setAge(35);
 
         Customer customerToUpdate = Customer.builder()
                 .name("John Updated")
                 .email("john.updated@example.com")
+                .dni("12345678A")
+                .age(35)
                 .build();
 
         when(customerMapper.toDomain(request)).thenReturn(customerToUpdate);

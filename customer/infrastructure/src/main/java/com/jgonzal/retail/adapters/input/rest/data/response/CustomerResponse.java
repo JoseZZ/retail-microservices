@@ -13,4 +13,6 @@ public class CustomerResponse {
     private Long id;
     private String name;
     private String email;
+    private String dni;
+    private Integer age;
 } 

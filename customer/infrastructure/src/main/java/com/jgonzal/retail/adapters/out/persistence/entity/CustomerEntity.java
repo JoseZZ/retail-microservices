@@ -25,4 +25,10 @@ public class CustomerEntity {
     
     @Column(nullable = false, length = 255)
     private String email;
+
+    @Column(nullable = false, length = 20)
+    private String dni;
+
+    @Column(nullable = false)
+    private Integer age;
 } 

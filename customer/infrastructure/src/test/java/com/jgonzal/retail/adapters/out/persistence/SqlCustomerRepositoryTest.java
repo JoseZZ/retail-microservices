@@ -39,10 +39,14 @@ class SqlCustomerRepositoryTest {
         Customer customer = Customer.builder()
                 .name("John Doe")
                 .email("john.doe@example.com")
+                .dni("12345678A")
+                .age(30)
                 .build();
         CustomerEntity entity = new CustomerEntity();
         entity.setName("John Doe");
         entity.setEmail("john.doe@example.com");
+        entity.setDni("12345678A");
+        entity.setAge(30);
 
         when(mapper.toEntity(customer)).thenReturn(entity);
         when(repository.save(entity)).thenReturn(entity);
@@ -55,22 +59,30 @@ class SqlCustomerRepositoryTest {
         assertThat(result).isNotNull();
         assertThat(result.getName()).isEqualTo(customer.getName());
         assertThat(result.getEmail()).isEqualTo(customer.getEmail());
+        assertThat(result.getDni()).isEqualTo(customer.getDni());
+        assertThat(result.getAge()).isEqualTo(customer.getAge());
         verify(repository).save(entity);
         verify(mapper).toEntity(customer);
         verify(mapper).toDomain(entity);
     }
 
     @Test
-    void findById_ShouldReturnCustomer_WhenExists() {
+    void findById_ShouldReturnCustomer_WhenCustomerExists() {
         // Given
         Long id = 1L;
-        CustomerEntity entity = new CustomerEntity();
-        entity.setId(id);
-        entity.setName("John Doe");
         Customer customer = Customer.builder()
                 .id(id)
                 .name("John Doe")
+                .email("john.doe@example.com")
+                .dni("12345678A")
+                .age(30)
                 .build();
+        CustomerEntity entity = new CustomerEntity();
+        entity.setId(id);
+        entity.setName("John Doe");
+        entity.setEmail("john.doe@example.com");
+        entity.setDni("12345678A");
+        entity.setAge(30);
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
         when(mapper.toDomain(entity)).thenReturn(customer);
@@ -82,14 +94,17 @@ class SqlCustomerRepositoryTest {
         assertThat(result).isPresent();
         assertThat(result.get().getId()).isEqualTo(id);
         assertThat(result.get().getName()).isEqualTo("John Doe");
+        assertThat(result.get().getEmail()).isEqualTo("john.doe@example.com");
+        assertThat(result.get().getDni()).isEqualTo("12345678A");
+        assertThat(result.get().getAge()).isEqualTo(30);
         verify(repository).findById(id);
         verify(mapper).toDomain(entity);
     }
 
     @Test
-    void findById_ShouldReturnEmpty_WhenNotExists() {
+    void findById_ShouldReturnEmpty_WhenCustomerDoesNotExist() {
         // Given
-        Long id = 1L;
+        Long id = 999L;
         when(repository.findById(id)).thenReturn(Optional.empty());
 
         // When
@@ -102,16 +117,14 @@ class SqlCustomerRepositoryTest {
     }
 
     @Test
-    void findAll_ShouldReturnAllCustomers() {
+    void findAll_ShouldReturnListOfCustomers() {
         // Given
-        List<CustomerEntity> entities = List.of(
-            new CustomerEntity(),
-            new CustomerEntity()
-        );
         List<Customer> customers = List.of(
-            Customer.builder().build(),
-            Customer.builder().build()
-        );
+                Customer.builder().id(1L).name("John Doe").email("john@example.com").dni("12345678A").age(30).build(),
+                Customer.builder().id(2L).name("Jane Doe").email("jane@example.com").dni("87654321B").age(25).build());
+        List<CustomerEntity> entities = List.of(
+                createCustomerEntity(1L, "John Doe", "john@example.com", "12345678A", 30),
+                createCustomerEntity(2L, "Jane Doe", "jane@example.com", "87654321B", 25));
 
         when(repository.findAll()).thenReturn(entities);
         when(mapper.toDomainList(entities)).thenReturn(customers);
@@ -120,9 +133,11 @@ class SqlCustomerRepositoryTest {
         List<Customer> result = sqlCustomerRepository.findAll();
 
         // Then
+        assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
+        assertThat(result).containsExactlyElementsOf(customers);
         verify(repository).findAll();
-        verify(mapper, times(1)).toDomainList(any());
+        verify(mapper).toDomainList(entities);
     }
 
     @Test
@@ -143,7 +158,7 @@ class SqlCustomerRepositoryTest {
     @Test
     void deleteById_ShouldReturnFalse_WhenCustomerDoesNotExist() {
         // Given
-        Long id = 1L;
+        Long id = 999L;
         when(repository.existsById(id)).thenReturn(false);
 
         // When
@@ -163,11 +178,15 @@ class SqlCustomerRepositoryTest {
                 .id(id)
                 .name("John Updated")
                 .email("john.updated@example.com")
+                .dni("12345678A")
+                .age(35)
                 .build();
         CustomerEntity entity = new CustomerEntity();
         entity.setId(id);
         entity.setName("John Updated");
         entity.setEmail("john.updated@example.com");
+        entity.setDni("12345678A");
+        entity.setAge(35);
 
         when(repository.existsById(id)).thenReturn(true);
         when(mapper.toEntity(customer)).thenReturn(entity);
@@ -182,6 +201,8 @@ class SqlCustomerRepositoryTest {
         assertThat(result.get().getId()).isEqualTo(id);
         assertThat(result.get().getName()).isEqualTo("John Updated");
         assertThat(result.get().getEmail()).isEqualTo("john.updated@example.com");
+        assertThat(result.get().getDni()).isEqualTo("12345678A");
+        assertThat(result.get().getAge()).isEqualTo(35);
         verify(repository).existsById(id);
         verify(mapper).toEntity(customer);
         verify(repository).save(entity);
@@ -196,6 +217,8 @@ class SqlCustomerRepositoryTest {
                 .id(id)
                 .name("John Updated")
                 .email("john.updated@example.com")
+                .dni("12345678A")
+                .age(35)
                 .build();
 
         when(repository.existsById(id)).thenReturn(false);
@@ -209,5 +232,15 @@ class SqlCustomerRepositoryTest {
         verify(mapper, never()).toEntity(any());
         verify(repository, never()).save(any());
         verify(mapper, never()).toDomain(any());
+    }
+
+    private CustomerEntity createCustomerEntity(Long id, String name, String email, String dni, Integer age) {
+        CustomerEntity entity = new CustomerEntity();
+        entity.setId(id);
+        entity.setName(name);
+        entity.setEmail(email);
+        entity.setDni(dni);
+        entity.setAge(age);
+        return entity;
     }
 } 

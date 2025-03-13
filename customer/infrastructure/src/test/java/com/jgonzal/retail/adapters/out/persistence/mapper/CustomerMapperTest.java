@@ -18,6 +18,8 @@ class CustomerMapperTest {
                 .id(1L)
                 .name("John Doe")
                 .email("john.doe@example.com")
+                .dni("12345678A")
+                .age(30)
                 .build();
 
         // When
@@ -28,6 +30,8 @@ class CustomerMapperTest {
         assertThat(entity.getId()).isEqualTo(customer.getId());
         assertThat(entity.getName()).isEqualTo(customer.getName());
         assertThat(entity.getEmail()).isEqualTo(customer.getEmail());
+        assertThat(entity.getDni()).isEqualTo(customer.getDni());
+        assertThat(entity.getAge()).isEqualTo(customer.getAge());
     }
 
     @Test
@@ -37,6 +41,8 @@ class CustomerMapperTest {
         entity.setId(1L);
         entity.setName("John Doe");
         entity.setEmail("john.doe@example.com");
+        entity.setDni("12345678A");
+        entity.setAge(30);
 
         // When
         Customer customer = mapper.toDomain(entity);
@@ -46,6 +52,8 @@ class CustomerMapperTest {
         assertThat(customer.getId()).isEqualTo(entity.getId());
         assertThat(customer.getName()).isEqualTo(entity.getName());
         assertThat(customer.getEmail()).isEqualTo(entity.getEmail());
+        assertThat(customer.getDni()).isEqualTo(entity.getDni());
+        assertThat(customer.getAge()).isEqualTo(entity.getAge());
     }
 
     @Test
