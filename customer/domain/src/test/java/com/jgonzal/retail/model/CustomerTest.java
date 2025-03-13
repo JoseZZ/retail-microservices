@@ -2,6 +2,8 @@ package com.jgonzal.retail.model;
 
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import com.jgonzal.retail.exception.CustomerValidationException;
 
 class CustomerTest {
 
@@ -110,5 +112,117 @@ class CustomerTest {
         assertThat(customer.getEmail()).isNull();
         assertThat(customer.getDni()).isNull();
         assertThat(customer.getAge()).isNull();
+    }
+
+    @Test
+    void shouldValidateValidCustomer() {
+        // Given
+        Customer customer = Customer.builder()
+                .dni("12345678A")
+                .age(30)
+                .build();
+
+        // When/Then
+        assertThat(customer.getDni()).isEqualTo("12345678A");
+        assertThat(customer.getAge()).isEqualTo(30);
+        customer.validate(); // No debe lanzar excepción
+    }
+
+    @Test
+    void shouldThrowException_WhenDniIsNull() {
+        // Given
+        Customer customer = Customer.builder()
+                .dni(null)
+                .age(30)
+                .build();
+
+        // When/Then
+        assertThatThrownBy(() -> customer.validate())
+                .isInstanceOf(CustomerValidationException.class)
+                .hasMessage("El DNI debe tener una longitud de 9 caracteres");
+    }
+
+    @Test
+    void shouldThrowException_WhenDniLengthIsNot9() {
+        // Given
+        Customer customer = Customer.builder()
+                .dni("12345678")
+                .age(30)
+                .build();
+
+        // When/Then
+        assertThatThrownBy(() -> customer.validate())
+                .isInstanceOf(CustomerValidationException.class)
+                .hasMessage("El DNI debe tener una longitud de 9 caracteres");
+    }
+
+    @Test
+    void shouldThrowException_WhenDniFirst8CharsAreNotNumbers() {
+        // Given
+        Customer customer = Customer.builder()
+                .dni("1234567AB")
+                .age(30)
+                .build();
+
+        // When/Then
+        assertThatThrownBy(() -> customer.validate())
+                .isInstanceOf(CustomerValidationException.class)
+                .hasMessage("Los primeros 8 caracteres del DNI deben ser números");
+    }
+
+    @Test
+    void shouldThrowException_WhenDniLastCharIsNotLetter() {
+        // Given
+        Customer customer = Customer.builder()
+                .dni("123456789")
+                .age(30)
+                .build();
+
+        // When/Then
+        assertThatThrownBy(() -> customer.validate())
+                .isInstanceOf(CustomerValidationException.class)
+                .hasMessage("El último carácter del DNI debe ser una letra");
+    }
+
+    @Test
+    void shouldThrowException_WhenAgeIsNull() {
+        // Given
+        Customer customer = Customer.builder()
+                .dni("12345678A")
+                .age(null)
+                .build();
+
+        // When/Then
+        assertThatThrownBy(() -> customer.validate())
+                .isInstanceOf(CustomerValidationException.class)
+                .hasMessage("La edad no puede ser nula");
+    }
+
+    @Test
+    void shouldThrowException_WhenAgeIsLessThan18() {
+        // Given
+        Customer customer = Customer.builder()
+                .dni("12345678A")
+                .age(17)
+                .build();
+
+        // When/Then
+        assertThatThrownBy(() -> customer.validate())
+                .isInstanceOf(CustomerValidationException.class)
+                .hasMessage("El cliente debe ser mayor de edad (18 años o más)");
+    }
+
+    @Test
+    void shouldValidateCustomerWithAge18() {
+        // Given
+        Customer customer = Customer.builder()
+                .dni("12345678A")
+                .age(18)
+                .build();
+
+        // When/Then
+        assertThat(customer.getDni()).isEqualTo("12345678A");
+        assertThat(customer.getAge()).isEqualTo(18);
+        customer.validate(); // No debe lanzar excepción
     }
 } 

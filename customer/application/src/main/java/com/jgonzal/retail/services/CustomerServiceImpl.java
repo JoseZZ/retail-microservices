@@ -20,6 +20,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public Customer createCustomer(Customer customer) {
+        customer.validate();
         return customerRepository.save(customer);
     }
 
@@ -38,7 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public Customer updateCustomer(Long id, Customer customer) {
+        customer.validate();
         return customerRepository.update(customer).orElseThrow(() -> new CustomerNotFoundException(id));
-
     }
 }
